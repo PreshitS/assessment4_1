@@ -2,35 +2,29 @@ from flask import Flask, render_template, request, redirect, url_for
 
 app = Flask(__name__)
 
-# Mock user database
-users = {
-    "user1": "password1",
-    "user2": "password2"
-}
-
 # Homepage route
 @app.route('/')
 def home():
-    return 'Welcome to the Flask Login App!'
+    return 'Welcome to the Flask App!'
 
-# Route to display login form
-@app.route('/login', methods=['GET', 'POST'])
-def login():
+# Route to display a form
+@app.route('/form', methods=['GET'])
+def show_form():
+    return render_template('form.html')
+
+# Route to handle form submission
+@app.route('/submit', methods=['POST'])
+def submit_form():
     if request.method == 'POST':
-        username = request.form['username']
-        password = request.form['password']
+        name = request.form['name']
+        email = request.form['email']
+        message = request.form['message']
         
-        if username in users and users[username] == password:
-            return redirect(url_for('welcome', username=username))
-        else:
-            return render_template('login.html', message='Invalid username or password.')
+        # Here you could process the form data further (e.g., store it in a database, send an email, etc.)
+        
+        return f"Form submitted successfully! Name: {name}, Email: {email}, Message: {message}"
     else:
-        return render_template('login.html')
-
-# Route to display welcome page after successful login
-@app.route('/welcome/<username>')
-def welcome(username):
-    return f'Welcome, {username}!'
+        return redirect(url_for('show_form'))
 
 if __name__ == '__main__':
     app.run(debug=True)
